@@ -7,6 +7,8 @@ menuIcon.onclick = () => {
     navbar.classList.toggle('active');
 };
 
+
+
 // Scroll Sections Active Link
 let sections = document.querySelectorAll('section');
 let navLinks = document.querySelectorAll('header nav a');
@@ -130,30 +132,140 @@ if (contactForm) {
     });
 }
 
-// Simple Particle Effect using JS to generate CSS shapes
-const particlesContainer = document.getElementById('particles');
-const particleCount = 50;
+// High-performance Canvas Constellation Background
+const canvas = document.getElementById('particles-canvas');
+const ctx = canvas.getContext('2d');
 
-for(let i = 0; i < particleCount; i++) {
-    let particle = document.createElement('div');
-    particle.style.position = 'absolute';
-    particle.style.width = Math.random() * 5 + 'px';
-    particle.style.height = particle.style.width;
-    particle.style.background = Math.random() > 0.5 ? 'var(--main-color)' : 'var(--accent-color)';
-    particle.style.borderRadius = '50%';
-    particle.style.opacity = Math.random() * 0.5;
-    particle.style.top = Math.random() * 100 + 'vh';
-    particle.style.left = Math.random() * 100 + 'vw';
-    
-    // Animate using GSAP
-    gsap.to(particle, {
-        y: `-${Math.random() * 100 + 50}vh`,
-        x: `${(Math.random() - 0.5) * 100}vw`,
-        duration: Math.random() * 10 + 10,
-        repeat: -1,
-        ease: "none",
-        delay: -Math.random() * 20
-    });
-    
-    particlesContainer.appendChild(particle);
+let particles = [];
+let mouse = { x: null, y: null, radius: 150 };
+
+// Resize Canvas
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    initParticles();
 }
+
+// Particle Class
+class Particle {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 1.0;
+        this.vy = (Math.random() - 0.5) * 1.0;
+        this.radius = Math.random() * 2 + 1.5;
+        this.color = Math.random() > 0.5 ? 'rgba(0, 240, 255, 0.7)' : 'rgba(188, 19, 254, 0.7)'; // Blue or Purple
+    }
+
+    update() {
+        // Move particle
+        this.x += this.vx;
+        this.y += this.vy;
+
+        // Bounce boundaries
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+
+        // Mouse interaction (gentle attraction/repulsion)
+        if (mouse.x !== null && mouse.y !== null) {
+            let dx = mouse.x - this.x;
+            let dy = mouse.y - this.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < mouse.radius) {
+                // Gentle push away
+                let force = (mouse.radius - dist) / mouse.radius;
+                this.x -= (dx / dist) * force * 1.5;
+                this.y -= (dy / dist) * force * 1.5;
+            }
+        }
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = this.color;
+        ctx.fill();
+        ctx.shadowBlur = 0; // Reset shadow for lines performance
+    }
+}
+
+// Initialize Particle Array
+function initParticles() {
+    particles = [];
+    const particleDensity = (canvas.width * canvas.height) / 10000;
+    const count = Math.min(Math.floor(particleDensity), 120); // Cap at 120 for performance
+    for (let i = 0; i < count; i++) {
+        particles.push(new Particle());
+    }
+}
+
+// Connect nearby particles with glowing lines
+function connectParticles() {
+    const connectionDist = 120;
+    for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+            let dx = particles[i].x - particles[j].x;
+            let dy = particles[i].y - particles[j].y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < connectionDist) {
+                // Line opacity falls off with distance
+                let alpha = (connectionDist - dist) / connectionDist * 0.15;
+                ctx.strokeStyle = `rgba(0, 240, 255, ${alpha})`;
+                ctx.lineWidth = 1.0;
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(particles[j].x, particles[j].y);
+                ctx.stroke();
+            }
+        }
+
+        // Draw connections to the mouse as well
+        if (mouse.x !== null && mouse.y !== null) {
+            let dx = particles[i].x - mouse.x;
+            let dy = particles[i].y - mouse.y;
+            let dist = Math.sqrt(dx * dx + dy * dy);
+            if (dist < mouse.radius) {
+                let alpha = (mouse.radius - dist) / mouse.radius * 0.25;
+                ctx.strokeStyle = `rgba(188, 19, 254, ${alpha})`; // Purple lines to cursor
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.moveTo(particles[i].x, particles[i].y);
+                ctx.lineTo(mouse.x, mouse.y);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+// Animation Loop
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
+        p.update();
+        p.draw();
+    });
+
+    connectParticles();
+    requestAnimationFrame(animate);
+}
+
+// Event Listeners
+window.addEventListener('resize', resizeCanvas);
+
+window.addEventListener('mousemove', (e) => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+});
+
+window.addEventListener('mouseleave', () => {
+    mouse.x = null;
+    mouse.y = null;
+});
+
+// Run Constellation Effect
+resizeCanvas();
+animate();

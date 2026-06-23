@@ -5,6 +5,7 @@
     --bg-color: #000000;
     --second-bg-color: #0a0a0a;
     --text-color: #ffffff;
+    --desc-color: #cccccc;
     --main-color: #00f0ff; /* Electric Blue */
     --accent-color: #bc13fe; /* Neon Purple */
     --glass-bg: rgba(255, 255, 255, 0.05);
@@ -12,6 +13,8 @@
     --glow-shadow: 0 0 20px rgba(0, 240, 255, 0.5);
     --glow-shadow-accent: 0 0 20px rgba(188, 19, 254, 0.5);
 }
+
+
 
 * {
     margin: 0;
@@ -183,7 +186,7 @@ h1, h2, h3, h4, h5 {
     font-size: 1.6rem;
     line-height: 1.6;
     margin-bottom: 3rem;
-    color: #ccc;
+    color: var(--desc-color);
 }
 
 span.multiple-text {
@@ -325,7 +328,7 @@ span.multiple-text {
     font-size: 1.6rem;
     margin-bottom: 2rem;
     line-height: 1.7;
-    color: #ccc;
+    color: var(--desc-color);
 }
 
 /* Timeline (Education & Experience) */
@@ -388,7 +391,7 @@ span.multiple-text {
 
 .timeline-content p, .timeline-content ul {
     font-size: 1.5rem;
-    color: #bbb;
+    color: var(--desc-color);
     margin-top: 1rem;
     line-height: 1.6;
 }
@@ -471,7 +474,7 @@ span.multiple-text {
 
 .service-box p {
     font-size: 1.5rem;
-    color: #ccc;
+    color: var(--desc-color);
     line-height: 1.6;
 }
 
@@ -506,7 +509,7 @@ span.multiple-text {
 
 .portfolio-content p {
     font-size: 1.5rem;
-    color: #ccc;
+    color: var(--desc-color);
     margin-bottom: 2rem;
     line-height: 1.6;
     flex-grow: 1;
@@ -543,7 +546,7 @@ span.multiple-text {
     margin-bottom: 2rem;
     display: flex;
     align-items: center;
-    color: #ddd;
+    color: var(--desc-color);
 }
 
 .achievement-list li i {
@@ -570,7 +573,7 @@ span.multiple-text {
 
 .contact-info p {
     font-size: 1.6rem;
-    color: #ccc;
+    color: var(--desc-color);
     margin-bottom: 3rem;
     line-height: 1.6;
 }
@@ -589,7 +592,7 @@ span.multiple-text {
 }
 
 .contact-item a, .contact-item span {
-    color: #ddd;
+    color: var(--desc-color);
     transition: 0.3s;
 }
 
@@ -649,7 +652,7 @@ span.multiple-text {
 
 .footer-text p {
     font-size: 1.6rem;
-    color: #ccc;
+    color: var(--desc-color);
 }
 
 .footer-iconTop a {
